@@ -100,6 +100,9 @@ const game = (() => {
       const soloMenu = document.querySelector('.solo-menu');
       soloMenu.style.display = 'block';
       soloPlay();
+      const audio = document.querySelector('audio');
+      audio.play();
+      
     });
     const multiplayer = document.getElementById('multiplayer');
     multiplayer.addEventListener('click', function () {
@@ -107,6 +110,8 @@ const game = (() => {
       const multiplayerMenu = document.querySelector('.mp-menu');
       multiplayerMenu.style.display = 'block';
       multiplayerPlay();
+      const audio = document.querySelector('audio');
+      audio.play();
     });
   }
 
@@ -298,5 +303,3 @@ let p1 = Player('P1', 'X', false);
 let p2 = Player('P2', 'O', false);
 
 game.menuSelection();
-
-
