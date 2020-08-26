@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <script src='http://use.edgefonts.net/de-walpergens-pica.js'></script>
+  <script type='text/javascript' src='//www.midijs.net/lib/midi.js'></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <title>Tic Tac Toe - By Wulfen</title>
+</head>
+
+<body>
+  <audio autoplay loop>
+    <source src="assets/music.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="menu-bg">
+    <div class="menu-container">
+      <div class="wulfen">Wulfen's</div>
+      <div class="header-text"> Tic Tac Toe House of Horror</div>
+
+      <div class="solo-menu">You poor soul... <br />
+        <div class="return">◄</div>
+        <label for="p1">What is your name? </label>
+        <input class="p1-enter-name" id="p1-input" type="text" name="p1" placeholder="You..." required>
+        <button class="enter-btn">✔</button>
+      </div>
+
+      <div class="mp-menu">On a journey together, aren't we?<br />
+        <div class="mp-return">◄</div>
+        <label for="mp-p1"> A name... </label>
+        <input class="mp-p1-enter-name" id="mp-p1" type="text" name="mp-p1" placeholder="You..." required><br />
+        <label for="mp-p2">Another name...</label>
+        <input class="mp-p2-enter-name" id="mp-p2" type="text" name="mp-p2" placeholder="Another you..." required><br />
+        <button class="mp-enter-btn">✔</button>
+      </div>
+
+
+      <div class="player-selection">I am... <br />
+        <label for="solo"> Alone... </label>
+        <input id="solo" class="radio-button" type="radio" name="mode" required>
+        <label for="multiplayer"> Accompanied! </label>
+        <input id="multiplayer" class="radio-button" type="radio" name="mode" required>
+      </div>
+    </div>
+
+  </div>
+  <div class="bg">
+    <div class="mute">🔊</div>
+    <div class="home">◄</div>
+
+    <div class="game-wrapper">
+      <div class="game-header"></div>
+      <div class="game-board">
+        <div class="grid-cell top-left" data-quadrant="1"></div>
+        <div class="grid-cell top-center" data-quadrant="2"></div>
+        <div class="grid-cell top-right" data-quadrant="3"></div>
+        <div class="grid-cell center-left" data-quadrant="4"></div>
+        <div class="grid-cell center-center" data-quadrant="5"></div>
+        <div class="grid-cell center-right" data-quadrant="6"></div>
+        <div class="grid-cell bottom-left" data-quadrant="7"></div>
+        <div class="grid-cell bottom-center" data-quadrant="8"></div>
+        <div class="grid-cell bottom-right" data-quadrant="9"></div>
+      </div>
+      <div class="play-again">Play again?</div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
