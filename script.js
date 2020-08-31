@@ -1,6 +1,6 @@
-/* gameBoard module. Our gameBoard can: modify the board, reset the board, set up hover effects for the board, and control the music of the game. */
+/* Board module. Our Board can: modify the board, reset the board, set up hover effects for the board, and control the music of the game. */
 
-const gameBoard = (() => {
+const Board = (() => {
   let board = ['', '', '', '', '', '', '', '', '']; // Our Tic Tac Toe board array.
   let moveCounter = 0;
 
@@ -15,13 +15,13 @@ const gameBoard = (() => {
       cell.style.color = 'white';
       cell.style.textShadow = '2px 3px 3px black';
     }
-    cell.textContent = gameBoard.board[index - 1];
+    cell.textContent = Board.board[index];
   }
 
   // Resets the board.
   const reset = () => {
-    gameBoard.board = ['', '', '', '', '', '', '', '', '']; // Reset the array.
-    gameBoard.moveCounter = 0;
+    Board.board = ['', '', '', '', '', '', '', '', '']; // Reset the array.
+    Board.moveCounter = 0;
     // Clean up our board
     const cells = document.querySelectorAll('.grid-cell');
     cells.forEach(cell => {
@@ -35,7 +35,7 @@ const gameBoard = (() => {
     cells.forEach(cell => {
       cell.addEventListener('mouseenter', function () {
         let index = cell.getAttribute('data-quadrant');
-        if (gameBoard.board[index - 1] == '') {
+        if (Board.board[index] == '') {
           if (p1.hasTurn && !game.hasEnded) {
             cell.textContent = p1.mark;
             cell.style.color = 'black';
@@ -49,7 +49,7 @@ const gameBoard = (() => {
       });
       cell.addEventListener('mouseleave', function () {
         let index = cell.getAttribute('data-quadrant');
-        if (gameBoard.board[index - 1] == '') {
+        if (Board.board[index] == '') {
           cell.textContent = '';
         }
       });
@@ -91,92 +91,11 @@ const gameBoard = (() => {
 
 const game = (() => {
 
-  // The menu selection at the beginning.  You can select to play vs AI or multiplayer.
-  const menuSelection = () => {
-    const playerSelection = document.querySelector('.player-selection');
-    const solo = document.getElementById('solo');
-    solo.addEventListener('click', function () {
-      playerSelection.style.display = 'none';
-      const soloMenu = document.querySelector('.solo-menu');
-      soloMenu.style.display = 'block';
-      soloPlay();
-      const audio = document.querySelector('audio');
-      audio.play();
-      
-    });
-    const multiplayer = document.getElementById('multiplayer');
-    multiplayer.addEventListener('click', function () {
-      playerSelection.style.display = 'none';
-      const multiplayerMenu = document.querySelector('.mp-menu');
-      multiplayerMenu.style.display = 'block';
-      multiplayerPlay();
-      const audio = document.querySelector('audio');
-      audio.play();
-    });
-  }
-
-  // Go back to the player selection menu and clear values from forms if present.
-  const soloReturn = document.querySelector('.return');
-  soloReturn.addEventListener('click', function () {
-    const soloMenu = document.querySelector('.solo-menu');
-    soloMenu.style.display = 'none';
-    const p1Input = document.querySelector('#p1-input');
-    p1Input.value = '';
-    const solo = document.getElementById('solo');
-    solo.checked = false;
-    const playerSelection = document.querySelector('.player-selection');
-    playerSelection.style.display = 'block';
-  });
-
-  // Go back to the player selection menu and clear values from forms if present.
-  const mpReturn = document.querySelector('.mp-return');
-  mpReturn.addEventListener('click', function () {
-    const multiplayerMenu = document.querySelector('.mp-menu');
-    multiplayerMenu.style.display = 'none';
-    const p1Input = document.getElementById('mp-p1');
-    p1Input.value = '';
-    const p2Input = document.getElementById('mp-p2');
-    p2Input.value = '';
-    const multiplayer = document.getElementById('multiplayer');
-    multiplayer.checked = false;
-    const playerSelection = document.querySelector('.player-selection');
-    playerSelection.style.display = 'block';
-  });
-
-  const returnHome = document.querySelector('.home');
-    returnHome.addEventListener('click', function() {
-      console.log('hi');
-      const gameMenu = document.querySelector('.menu-bg');
-      gameMenu.style.display = 'block';
-      const playerSelection = document.querySelector('.player-selection');
-      playerSelection.style.display = 'block';
-      const playAgain = document.querySelector('.play-again');
-      playAgain.style.display = 'none';
-    });
-
-  // Our second menu for solo play, to set the P1 name, and start the game once done.
-  const soloPlay = () => {
-    const enterBtn = document.querySelector('.enter-btn');
-    enterBtn.addEventListener('click', function () {
-      p1.name = document.querySelector('#p1-input').value;
-      p1.mark = 'X';
-      p2.name = 'AI';
-      p2.mark = 'O';
-      p2.isAI = true;
-      const soloMenu = document.querySelector('.solo-menu');
-      soloMenu.style.display = 'none';
-      const gameMenu = document.querySelector('.menu-bg');
-      gameMenu.style.display = 'none';
-      game.setup(); // Sets our grid listeners
-      game.newRound(); // Starts a new round.
-    });
-  }
-
   const aiPlay = () => {
     let availableMoves = [];
-    for (let i = 0; i < gameBoard.board.length; i++) {
-      if (gameBoard.board[i] == '') {
-        availableMoves.push(i + 1);
+    for (let i = 0; i < Board.board.length; i++) {
+      if (Board.board[i] == '') {
+        availableMoves.push(i);
       } else {
         continue;
       }
@@ -187,29 +106,12 @@ const game = (() => {
 
   }
 
-  const multiplayerPlay = () => {
-    const mpEnterBtn = document.querySelector('.mp-enter-btn');
-    mpEnterBtn.addEventListener('click', function () {
-      p1.name = document.querySelector('#mp-p1').value;
-      p1.mark = 'X';
-      p2.name = document.querySelector('#mp-p2').value;
-      p2.mark = 'O';
-      const multiplayerMenu = document.querySelector('.mp-menu');
-      multiplayerMenu.style.display = 'none';
-      const gameMenu = document.querySelector('.menu-bg');
-      gameMenu.style.display = 'none';
-      game.setup();
-      game.newRound();
-    });
-  }
-
-
   // Allows to start a new round, and it resets all board flags.
   const newRound = () => {
-    gameBoard.reset();
+    Board.reset();
     p1.hasTurn = true;
     game.hasEnded = false;
-    gameBoard.updateHeader();
+    Board.updateHeader();
   }
 
   // Setup our click event handlers to manage turns.
@@ -221,60 +123,58 @@ const game = (() => {
         turn(index);
       });
     });
-    gameBoard.updateHover(); // Update our hover effects every time the array us changed.
+    Board.updateHover(); // Update our hover effects every time the array us changed.
   }
 
   // Manages game flow.
   const turn = (index) => {
-    if (gameBoard.board[index - 1] == '') {
+    if (Board.board[index] == '') {
       if (p1.hasTurn && !game.hasEnded) {
-        gameBoard.board.splice(index - 1, 1, p1.mark); // Modifies array to insert X or O.
-        gameBoard.modify(index);
+        Board.board.splice(index, 1, p1.mark); // Modifies array to insert X or O.
+        Board.modify(index);
         p1.hasTurn = false; // Passes the turn to P2
-        gameBoard.moveCounter++;
+        Board.moveCounter++;
         game.checkForWinner();
         if (p2.isAI) {
           game.aiPlay();
         }
       } else if (!p1.hasTurn && !game.hasEnded) {
-        gameBoard.board.splice(index - 1, 1, p2.mark); // Modifies array to insert X or O.
-        gameBoard.modify(index);
+        Board.board.splice(index, 1, p2.mark); // Modifies array to insert X or O.
+        Board.modify(index);
         p1.hasTurn = true; // Passes the turn to P1
-        gameBoard.moveCounter++;
+        Board.moveCounter++;
       }
     }
-    gameBoard.updateHeader(); // Update whose turn it is.
+    Board.updateHeader(); // Update whose turn it is.
     game.checkForWinner();  // At the end of every turn, check to see if there is a winner.
   }
 
   // Allows us to check if the grid has a possible winner, or if it is a draw.
   const checkForWinner = () => {
+    const winCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
     if (!game.hasEnded) {
-      if (gameBoard.board[0] !== '' && gameBoard.board[0] == gameBoard.board[1] && gameBoard.board[1] == gameBoard.board[2] ||
-        gameBoard.board[3] !== '' && gameBoard.board[3] == gameBoard.board[4] && gameBoard.board[4] == gameBoard.board[5] ||
-        gameBoard.board[6] !== '' && gameBoard.board[6] == gameBoard.board[7] && gameBoard.board[7] == gameBoard.board[8] ||
-        gameBoard.board[0] !== '' && gameBoard.board[0] == gameBoard.board[3] && gameBoard.board[3] == gameBoard.board[6] ||
-        gameBoard.board[1] !== '' && gameBoard.board[1] == gameBoard.board[4] && gameBoard.board[4] == gameBoard.board[7] ||
-        gameBoard.board[2] !== '' && gameBoard.board[2] == gameBoard.board[5] && gameBoard.board[5] == gameBoard.board[8] ||
-        gameBoard.board[0] !== '' && gameBoard.board[0] == gameBoard.board[4] && gameBoard.board[4] == gameBoard.board[8] ||
-        gameBoard.board[2] !== '' && gameBoard.board[2] == gameBoard.board[4] && gameBoard.board[4] == gameBoard.board[6]) {
+      for (i = 0; i < winCombos.length; i++) {
+        let combo = winCombos[i];
+        if (Board.board[combo[0]] === '') continue
+        if (Board.board[combo[0]] === Board.board[combo[1]] && Board.board[combo[0]] === Board.board[combo[2]]) {
 
-        gameBoard.updateHeader(`Winner is ${p1.hasTurn ? p2.name : p1.name}...`); // Winner outcome. 
-        game.hasEnded = true;
-        const playAgain = document.querySelector('.play-again');
-        playAgain.style.display = 'block';
-      } else if (gameBoard.moveCounter == 9) {
-        gameBoard.updateHeader('Draw...'); // Draw outcome. 
-        game.hasEnded = true;
-        const playAgain = document.querySelector('.play-again');
-        playAgain.style.display = 'block';
+          Board.updateHeader(`Winner is ${p1.hasTurn ? p2.name : p1.name}...`); // Winner outcome. 
+          game.hasEnded = true;
+          const playAgain = document.querySelector('.play-again');
+          playAgain.style.display = 'block';
+        } else if (Board.moveCounter == 9) {
+          Board.updateHeader('Draw...'); // Draw outcome. 
+          game.hasEnded = true;
+          const playAgain = document.querySelector('.play-again');
+          playAgain.style.display = 'block';
+        }
       }
     }
   }
 
   // Give functionality to our play again button.
   const playAgain = document.querySelector('.play-again');
-  playAgain.addEventListener('click', function() {
+  playAgain.addEventListener('click', function () {
     playAgain.style.display = 'none';
     game.setup();
     game.newRound();
@@ -283,8 +183,105 @@ const game = (() => {
 
   const hasEnded = true;
 
-  return { newRound, setup, turn, checkForWinner, hasEnded, menuSelection, aiPlay };
+  return { newRound, setup, turn, checkForWinner, hasEnded, aiPlay };
 })();
+
+
+
+/* Our Module in charge of the Menu */
+
+const Menu = (() => {
+
+  // Initalize our DOM variables. 
+  const playerSelection = document.querySelector('.player-selection');
+  const solo = document.getElementById('solo');
+  const soloMenu = document.querySelector('.solo-menu');
+  const multiplayer = document.getElementById('multiplayer');
+  const multiplayerMenu = document.querySelector('.mp-menu');
+  const audio = document.querySelector('audio');
+  const soloReturn = document.querySelector('.return');
+  const playerOne = document.querySelector('#p1-input');
+  const mpReturn = document.querySelector('.mp-return');
+  const mpPlayerOne = document.getElementById('mp-p1');
+  const playerTwo = document.getElementById('mp-p2');
+  const gameMenu = document.querySelector('.menu-bg');
+  const playAgain = document.querySelector('.play-again');
+  const enterBtn = document.querySelector('.enter-btn');
+  const mpEnterBtn = document.querySelector('.mp-enter-btn');
+
+
+  // The menu selection at the beginning.  You can select to play vs AI or multiplayer.
+  const selection = () => {
+    solo.addEventListener('click', function () {
+      playerSelection.style.display = 'none';
+      soloMenu.style.display = 'block';
+      soloPlay();
+      audio.play();
+    });
+    multiplayer.addEventListener('click', function () {
+      playerSelection.style.display = 'none';
+      multiplayerMenu.style.display = 'block';
+      multiplayerPlay();
+      audio.play();
+    });
+  }
+
+  // Go back to the player selection menu and clear values from forms if present.
+  soloReturn.addEventListener('click', function () {
+    soloMenu.style.display = 'none';
+    playerOne.value = '';
+    solo.checked = false;
+    playerSelection.style.display = 'block';
+  });
+
+  // Go back to the player selection menu and clear values from forms if present.
+  mpReturn.addEventListener('click', function () {
+    multiplayerMenu.style.display = 'none';
+    mpPlayerOne.value = '';
+    playerTwo.value = '';
+    multiplayer.checked = false;
+    playerSelection.style.display = 'block';
+  });
+
+  const returnHome = document.querySelector('.home');
+  returnHome.addEventListener('click', function () {
+    console.log('hi');
+    gameMenu.style.display = 'block';
+    playerSelection.style.display = 'block';
+    playAgain.style.display = 'none';
+  });
+
+  // Our second menu for solo play, to set the P1 name, and start the game once done.
+  const soloPlay = () => {
+    enterBtn.addEventListener('click', function () {
+      p1.name = document.querySelector('#p1-input').value;
+      p1.mark = 'X';
+      p2.name = 'AI';
+      p2.mark = 'O';
+      p2.isAI = true;
+      soloMenu.style.display = 'none';
+      gameMenu.style.display = 'none';
+      game.setup(); // Sets our grid listeners
+      game.newRound(); // Starts a new round.
+    });
+  }
+
+  const multiplayerPlay = () => {
+    mpEnterBtn.addEventListener('click', function () {
+      p1.name = document.querySelector('#mp-p1').value;
+      p1.mark = 'X';
+      p2.name = document.querySelector('#mp-p2').value;
+      p2.mark = 'O';
+      multiplayerMenu.style.display = 'none';
+      gameMenu.style.display = 'none';
+      game.setup();
+      game.newRound();
+    });
+  }
+
+  return { selection };
+})();
+
 
 /* Our player factory in charge of creating new players, and assigning them functions to obtain their names and marks */
 
@@ -302,4 +299,4 @@ const Player = (name, mark, AI) => {
 let p1 = Player('P1', 'X', false);
 let p2 = Player('P2', 'O', false);
 
-game.menuSelection();
+Menu.selection();
