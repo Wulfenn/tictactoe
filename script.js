@@ -77,9 +77,9 @@ const Board = (() => {
       return;
     }
     if (p1.hasTurn && !game.hasEnded) {
-      gameHeader.textContent = `Your turn... ${p1.name}`;
+      gameHeader.innerHTML = `Your turn...<br /> ${p1.name}`;
     } else if (!p1.hasTurn && !game.hasEnded) {
-      gameHeader.textContent = `Your turn... ${p2.name}`;
+      gameHeader.innerHTML = `Your turn...<br /> ${p2.name}`;
     }
   }
 
@@ -91,26 +91,74 @@ const Board = (() => {
 
 const game = (() => {
 
+  const scores = {
+    X: -1,
+    O: 1,
+    tie: 0
+  }
+
   const aiPlay = () => {
-    let availableMoves = [];
+    let bestScore = -Infinity;
+    let move;
     for (let i = 0; i < Board.board.length; i++) {
       if (Board.board[i] == '') {
-        availableMoves.push(i);
-      } else {
-        continue;
+        Board.board[i] = p2.mark;
+        let score = minimax(Board.board, 0, false);
+        Board.board[i] = '';
+        if (score > bestScore) {
+          bestScore = score;
+          move = i;
+        }
       }
-    }
-    let random = Math.floor(Math.random() * (availableMoves.length - 0)) + 0;
-    let index = availableMoves[random];
-    turn(index);
 
+    }
+    turn(move);
   }
+
+  const minimax = (board, depth, isMaximizing) => {
+    let result = game.checkForWinner();
+    game.hasEnded = false;
+    if (result !== undefined) {
+      return scores[result];
+    }
+
+
+    if (isMaximizing) {
+      let bestScore = -Infinity;
+      for (let i = 0; i < board.length; i++) {
+        if (board[i] == '') {
+          board[i] = p2.mark;
+          let score = minimax(board, depth + 1, false);
+          board[i] = '';
+          bestScore = Math.max(score, bestScore);
+        }
+      }
+      return bestScore;
+    } else {
+      let bestScore = Infinity;
+      for (let i = 0; i < board.length; i++) {
+        if (board[i] == '') {
+          board[i] = p1.mark;
+          let score = minimax(board, depth + 1, true);
+          board[i] = '';
+          bestScore = Math.min(score, bestScore);
+        }
+      }
+      return bestScore;
+    }
+  }
+
 
   // Allows to start a new round, and it resets all board flags.
   const newRound = () => {
     Board.reset();
-    p1.hasTurn = true;
     game.hasEnded = false;
+    if (p2.isAI) {
+      p1.hasTurn = false;
+      game.aiPlay();
+    } else {
+      p1.hasTurn = true;
+    }
     Board.updateHeader();
   }
 
@@ -158,15 +206,25 @@ const game = (() => {
         if (Board.board[combo[0]] === '') continue
         if (Board.board[combo[0]] === Board.board[combo[1]] && Board.board[combo[0]] === Board.board[combo[2]]) {
 
-          Board.updateHeader(`Winner is ${p1.hasTurn ? p2.name : p1.name}...`); // Winner outcome. 
-          game.hasEnded = true;
-          const playAgain = document.querySelector('.play-again');
-          playAgain.style.display = 'block';
+          if (Board.board[combo[0]] == 'X') {
+            Board.updateHeader(`Winner is ${p1.hasTurn ? p2.name : p1.name}...`); // Winner outcome. 
+            const playAgain = document.querySelector('.play-again');
+            playAgain.style.display = 'block';
+            game.hasEnded = true;
+            return 'X';
+          } else {
+            Board.updateHeader(`Winner is ${p1.hasTurn ? p2.name : p1.name}...`); // Winner outcome. 
+            const playAgain = document.querySelector('.play-again');
+            playAgain.style.display = 'block';
+            game.hasEnded = true;
+            return 'O';
+          }
         } else if (Board.moveCounter == 9) {
           Board.updateHeader('Draw...'); // Draw outcome. 
           game.hasEnded = true;
           const playAgain = document.querySelector('.play-again');
           playAgain.style.display = 'block';
+          return 'tie';
         }
       }
     }

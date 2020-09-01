@@ -212,9 +212,15 @@ body, html {
 
 .game-header {
   text-align: center;
-  font-size: 60px;
+  width: 350px;
+  height: 100px;
+  margin-bottom: 40px;
+  font-size: 50px;
   padding: 20px;
   text-shadow: 2px 2px 3px grey;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .game-board {
