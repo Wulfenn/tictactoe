@@ -91,6 +91,7 @@ const Board = (() => {
 
 const game = (() => {
 
+  // Start Minimax
   const scores = {
     X: -1,
     O: 1,
@@ -118,6 +119,7 @@ const game = (() => {
   const minimax = (board, depth, isMaximizing) => {
     let result = game.checkForWinner();
     game.hasEnded = false;
+    playAgain(false);
     if (result !== undefined) {
       return scores[result];
     }
@@ -148,6 +150,7 @@ const game = (() => {
     }
   }
 
+  // End Minimax
 
   // Allows to start a new round, and it resets all board flags.
   const newRound = () => {
@@ -208,32 +211,38 @@ const game = (() => {
 
           if (Board.board[combo[0]] == 'X') {
             Board.updateHeader(`Winner is ${p1.hasTurn ? p2.name : p1.name}...`); // Winner outcome. 
-            const playAgain = document.querySelector('.play-again');
-            playAgain.style.display = 'block';
             game.hasEnded = true;
+            playAgain(true);
             return 'X';
           } else {
             Board.updateHeader(`Winner is ${p1.hasTurn ? p2.name : p1.name}...`); // Winner outcome. 
-            const playAgain = document.querySelector('.play-again');
-            playAgain.style.display = 'block';
             game.hasEnded = true;
+            playAgain(true);
             return 'O';
           }
         } else if (Board.moveCounter == 9) {
           Board.updateHeader('Draw...'); // Draw outcome. 
           game.hasEnded = true;
-          const playAgain = document.querySelector('.play-again');
-          playAgain.style.display = 'block';
+          playAgain(true)
           return 'tie';
         }
       }
     }
   }
 
+  const playAgain = status => {
+    const playAgain = document.querySelector('.play-again');
+    if (status) {
+      playAgain.style.display = 'block';
+    } else {
+      playAgain.style.display = 'none';
+    }
+  }
+
   // Give functionality to our play again button.
-  const playAgain = document.querySelector('.play-again');
-  playAgain.addEventListener('click', function () {
-    playAgain.style.display = 'none';
+  const playAgainText = document.querySelector('.play-again');
+  playAgainText.addEventListener('click', function () {
+    playAgainText.style.display = 'none';
     game.setup();
     game.newRound();
   });
