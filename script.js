@@ -150,6 +150,20 @@ const game = (() => {
     }
   }
 
+  const aiFirstMove = () => {
+    let availableMoves = [];
+    for (let i = 0; i < Board.board.length; i++) {
+      if (Board.board[i] == '') {
+        availableMoves.push(i);
+      } else {
+        continue;
+      }
+    }
+    let random = Math.floor(Math.random() * (availableMoves.length - 0)) + 0;
+    let index = availableMoves[random];
+    turn(index);
+  }
+
   // End Minimax
 
   // Allows to start a new round, and it resets all board flags.
@@ -158,7 +172,7 @@ const game = (() => {
     game.hasEnded = false;
     if (p2.isAI) {
       p1.hasTurn = false;
-      game.aiPlay();
+      aiFirstMove();
     } else {
       p1.hasTurn = true;
     }
